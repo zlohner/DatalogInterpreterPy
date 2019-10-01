@@ -7,12 +7,11 @@ from Token import Token
 keywords = { 'Schemes' : 'SCHEMES', 'Facts' : 'FACTS', 'Rules' : 'RULES', 'Queries' : 'QUERIES' }
 
 class Scanner(object):
-	def __init__(self, filename):
-		self.file = open(filename, 'r')
-		self.c = self.file.read(1)
+	def __init__(self):
+		self.file = None
+		self.c = None
 		self.tokens = []
 		self.lineNum = 1
-		self.scan()
 
 	def __repr__(self):
 		sb = []
@@ -110,7 +109,11 @@ class Scanner(object):
 		self.tokens = [token for token in self.tokens if token.type != 'COMMENT']
 
 	# scans the file and splits into tokens, stored in tokens
-	def scan(self):
+	def scan(self, filename):
+		self.file = open(filename, 'r')
+		self.c = self.file.read(1)
+		self.tokens = []
+		self.lineNum = 1
 		while self.c:
 			if self.c == ',':
 				self.tokens.append(Token('COMMA', ',', self.lineNum))

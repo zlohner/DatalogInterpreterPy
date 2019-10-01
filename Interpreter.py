@@ -8,7 +8,8 @@ class Interpreter(object):
 	def __init__(self, program):
 		self.program = program
 		self.db = {}
-		self.output = self.interpret()
+		self.passes = {}
+		self.queryEvaluation = ''
 
 	def query(self, query):
 		R = deepcopy(self.db[query.name])
@@ -59,18 +60,20 @@ class Interpreter(object):
 				self.evaluateRule(i)
 		return passes
 
-	def interpret(self):
-		sb = []
-
+	def interpret(self, project):
 		for scheme in self.program.schemes:
 			self.db[scheme.name] = Relation([t.value for t in scheme.params])
 
 		for fact in self.program.facts:
 			self.db[fact.name].tuples.add(tuple(t.value for t in fact.params))
 
-		passes = self.evaluateRuleSet(set([i for i in range(len(self.program.rules))]))
-		sb.append('Schemes populated after %d passes through the Rules.\n' % passes)
+		if project == 4:
+			passes = self.evaluateRuleSet(set([i for i in range(len(self.program.rules))]))
+			self.passes['single'] = passes
+		elif project == 5:
+			pass
 
+		sb = []
 		for query in self.program.queries:
 			R = self.query(query)
 
@@ -83,7 +86,15 @@ class Interpreter(object):
 			sb.append(str(R))
 			sb.append('\n')
 
-		return ''.join(sb[:-1])
+		self.queryEvaluation = ''.join(sb[:-1])
 
 	def dbsize(self):
 		return sum([len(R) for R in self.db.values()])
+
+	def output(self, project):
+		if project == 3:
+			return self.queryEvaluation
+		elif project == 4:
+			return 'Schemes populated after %d passes through the Rules.\n' % self.passes['single'] + self.queryEvaluation
+		elif project == 5:
+			return 'TODO'

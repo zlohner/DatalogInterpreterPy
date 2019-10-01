@@ -7,14 +7,16 @@ from Parser import Parser
 from Interpreter import Interpreter
 
 def interpret(filename, project):
-	s = Scanner(filename)
+	s = Scanner()
+	s.scan(filename)
 	if project == 1:
 		print(s)
 		return
 	else:
 		s.removeComments()
 
-	p = Parser(s.tokens)
+	p = Parser()
+	p.parse(s.tokens)
 	if project == 2:
 		if p.good:
 			print('Success!')
@@ -22,9 +24,8 @@ def interpret(filename, project):
 		return
 
 	i = Interpreter(p.program)
-	if project >= 3:
-		print(i.output)
-		return
+	i.interpret(project)
+	print(i.output(project))
 
 project = 3
 if len(sys.argv) > 2:

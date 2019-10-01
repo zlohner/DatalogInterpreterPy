@@ -6,13 +6,12 @@ class InvalidToken(Exception):
 		self.token = Token
 
 class Parser(object):
-	def __init__(self, tokens):
-		self.tokens = tokens
+	def __init__(self):
+		self.tokens = None
 		self.marker = 0
-		self.program = DatalogProgram()
+		self.program = None
 		self.good = True
 		self.domain = False
-		self.parse()
 
 	def match(self, types):
 		t = self.tokens[self.marker]
@@ -24,7 +23,12 @@ class Parser(object):
 			self.program.domain.add(t.value)
 		return t
 
-	def parse(self):
+	def parse(self, tokens):
+		self.tokens = tokens
+		self.marker = 0
+		self.program = DatalogProgram()
+		self.good = True
+		self.domain = False
 		try:
 			self.datalogProgram()
 		except InvalidToken as i:
