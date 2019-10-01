@@ -1,10 +1,9 @@
-from sortedcontainers import SortedSet
-
 class Rule(object):
 	def __init__(self, headPred, predicates):
 		self.headPred = headPred
 		self.predicates = predicates
-	def __str__(self):
+
+	def __repr__(self):
 		sb = []
 		sb.append(str(self.headPred))
 		sb.append(' :- ')
@@ -23,7 +22,7 @@ class Predicate(object):
 		self.name = name
 		self.params = params
 
-	def __str__(self):
+	def __repr__(self):
 		sb = []
 		sb.append(self.name)
 		sb.append('(')
@@ -44,9 +43,9 @@ class DatalogProgram(object):
 		self.facts = []
 		self.rules = []
 		self.queries = []
-		self.domain = SortedSet()
+		self.domain = set([])
 
-	def __str__(self):
+	def __repr__(self):
 		sb = []
 
 		sb.append('Schemes(')
@@ -83,7 +82,7 @@ class DatalogProgram(object):
 		sb.append('\nDomain(')
 		sb.append(str(len(self.domain)))
 		sb.append('):')
-		for item in self.domain:
+		for item in sorted(self.domain):
 			sb.append('\n  ')
 			sb.append(item)
 

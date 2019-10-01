@@ -6,7 +6,7 @@ class Token(object):
 		self.value = value
 		self.lineNum = lineNum
 
-	def __str__(self):
+	def __repr__(self):
 		sb = []
 		sb.append('(')
 		sb.append(str(self.type))

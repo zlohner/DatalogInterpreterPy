@@ -12,11 +12,12 @@ class Scanner(object):
 		self.lineNum = 1
 		self.scan()
 
-	def __str__(self):
+	def __repr__(self):
 		sb = []
 		for token in self.tokens:
 			sb.append(str(token))
-		sb.append('Total Tokens =')
+			sb.append('\n')
+		sb.append('Total Tokens = ')
 		sb.append(str(len(self.tokens)))
 		return ''.join(sb)
 

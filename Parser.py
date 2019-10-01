@@ -11,7 +11,7 @@ class Parser(object):
 		self.marker = 0
 		self.program = DatalogProgram()
 		self.good = True
-		self.inFact = False
+		self.domain = False
 		self.parse()
 
 	def match(self, types):
@@ -20,7 +20,7 @@ class Parser(object):
 			self.marker += 1
 		else:
 			raise InvalidToken(t)
-		if t.type == 'STRING' and self.inFact:
+		if t.type == 'STRING' and self.domain:
 			self.program.domain.add(t.value)
 		return t
 
@@ -29,7 +29,7 @@ class Parser(object):
 			self.datalogProgram()
 		except InvalidToken as i:
 			self.good = False
-			print 'Failure!\n ',str(i.token)
+			print('Failure!\n ' + str(i.token))
 
 	def datalogProgram(self):
 		self.match({'SCHEMES'})
@@ -56,10 +56,10 @@ class Parser(object):
 			self.schemeList()
 
 	def fact(self):
-		self.inFact = True
+		self.domain = True
 		self.program.facts.append(self.predicate({'STRING'}))
 		self.match({'PERIOD'})
-		self.inFact = False
+		self.domain = False
 
 	def factList(self):
 		if self.tokens[self.marker].type == 'ID':
@@ -67,11 +67,11 @@ class Parser(object):
 			self.factList()
 
 	def rule(self):
-		headPredicate = self.predicate({'ID','STRING'})
+		headPredicate = self.predicate({'ID', 'STRING'})
 		preds = []
 		self.match({'COLON_DASH'})
-		preds.append(self.predicate({'ID','STRING'}))
-		self.predicateList({'ID','STRING'}, preds)
+		preds.append(self.predicate({'ID', 'STRING'}))
+		self.predicateList({'ID', 'STRING'}, preds)
 		self.match({'PERIOD'})
 		self.program.rules.append(Rule(headPredicate, preds))
 
@@ -81,7 +81,7 @@ class Parser(object):
 			self.ruleList()
 
 	def query(self):
-		self.program.queries.append(self.predicate({'ID','STRING'}))
+		self.program.queries.append(self.predicate({'ID', 'STRING'}))
 		self.match({'Q_MARK'})
 
 	def queryList(self):
