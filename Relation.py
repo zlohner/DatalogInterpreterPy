@@ -64,8 +64,55 @@ class Relation(object):
 
 		self.selectEqual(equal)
 
-	def join(self, other):
-		pass
+	def restrictions(self, R):
+		return [(i, j) for i, s1 in enumerate(self.schema) for j, s2 in enumerate(R.schema) if s1 == s2]
+
+	def joinSchema(self, R, restrictions):
+		joinedSchema = self.schema
+		for i in range(len(R.schema)):
+			add = True
+			for restriction in restrictions:
+				if i == restriction[1]:
+					add = False
+					break
+			if add:
+				joinedSchema.append(R.schema[i])
+		return joinedSchema
+
+	def joinable(self, t1, t2, restrictions):
+		for restriction in restrictions:
+			if t1[restriction[0]] != t2[restriction[1]]:
+				return False
+		return True
+
+	def tupleJoin(self, t1, t2, restrictions):
+		joined = list(t1)
+
+		for i, s in enumerate(t2):
+			add = True
+			for restriction in restrictions:
+				if i == restriction[1]:
+					add = False
+					break
+			if add:
+				joined.append(s)
+
+		return tuple(joined)
+
+	def join(self, R):
+		restrictions = self.restrictions(R)
+
+		self.schema = self.joinSchema(R, restrictions)
+
+		joined = set([])
+		for t1 in self.tuples:
+			for t2 in R.tuples:
+				if self.joinable(t1, t2, restrictions):
+					joined.add(self.tupleJoin(t1, t2, restrictions))
+
+		self.tuples = joined
+
+		return self
 
 	def __len__(self):
 		return len(self.tuples)

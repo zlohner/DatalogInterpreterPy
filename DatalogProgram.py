@@ -1,11 +1,11 @@
 class Rule(object):
-	def __init__(self, headPred, predicates):
-		self.headPred = headPred
+	def __init__(self, head, predicates):
+		self.head = head
 		self.predicates = predicates
 
 	def __repr__(self):
 		sb = []
-		sb.append(str(self.headPred))
+		sb.append(str(self.head))
 		sb.append(' :- ')
 		first = True
 		for predicate in self.predicates:

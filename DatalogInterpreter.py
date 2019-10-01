@@ -22,7 +22,7 @@ def interpret(filename, project):
 		return
 
 	i = Interpreter(p.program)
-	if project == 3:
+	if project >= 3:
 		print(i.output)
 		return
 
