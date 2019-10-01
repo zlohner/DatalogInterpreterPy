@@ -8,7 +8,7 @@ class Interpreter(object):
 	def __init__(self, program):
 		self.program = program
 		self.db = {}
-		self.interpret()
+		self.output = self.interpret()
 
 	def query(self, query):
 		R = deepcopy(self.db[query.name])
@@ -35,10 +35,13 @@ class Interpreter(object):
 		for fact in self.program.facts:
 			self.db[fact.name].tuples.add(tuple(t.value for t in fact.params))
 
+		# for rule in rules:
+		#	...
+
+		sb = []
 		for query in self.program.queries:
 			R = self.query(query)
 
-			sb = []
 			sb.append(str(query) + '?')
 			if len(R) > 0:
 				sb.append(' Yes(' + str(len(R)) + ')')
@@ -46,4 +49,6 @@ class Interpreter(object):
 				sb.append(' No')
 
 			sb.append(str(R))
-			print(''.join(sb))
+			sb.append('\n')
+
+		return ''.join(sb[:-1])

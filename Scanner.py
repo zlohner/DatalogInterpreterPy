@@ -106,6 +106,9 @@ class Scanner(object):
 
 		return Token(type, value, startLine)
 
+	def removeComments(self):
+		self.tokens = [token for token in self.tokens if token.type != 'COMMENT']
+
 	# scans the file and splits into tokens, stored in tokens
 	def scan(self):
 		while self.c:
@@ -134,7 +137,7 @@ class Scanner(object):
 			elif self.c == '\'':
 				self.tokens.append(self.scanString())
 			elif self.c == '#':
-				self.scanComment()
+				self.tokens.append(self.scanComment())
 			else:
 				if (self.c.isalpha()):
 					self.tokens.append(self.scanID())
