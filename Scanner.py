@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import os
+
 from Token import Token
 
-keywords = { 'Schemes':'SCHEMES', 'Facts':'FACTS', 'Rules':'RULES', 'Queries':'QUERIES' }
+keywords = { 'Schemes' : 'SCHEMES', 'Facts' : 'FACTS', 'Rules' : 'RULES', 'Queries' : 'QUERIES' }
 
 class Scanner(object):
 	def __init__(self, filename):
@@ -31,7 +33,7 @@ class Scanner(object):
 			value += self.c
 			self.c = self.file.read(1)
 		# 'unget' the last character
-		self.file.seek(-1, 1)
+		self.file.seek(self.file.tell() - 1, os.SEEK_SET)
 
 		# if it's a keyword, create that keyword token
 		if value in keywords:
@@ -56,7 +58,7 @@ class Scanner(object):
 					value += self.c
 				else:
 					# 'unget' the last character
-					self.file.seek(-1, 1)
+					self.file.seek(self.file.tell() - 1, os.SEEK_SET)
 					end = True
 			elif self.c == '\n':
 				self.lineNum += 1
@@ -96,7 +98,7 @@ class Scanner(object):
 				value += self.c
 				self.c = self.file.read(1)
 			# 'unget' the last character
-			self.file.seek(-1, 1)
+			self.file.seek(self.file.tell() - 1, os.SEEK_SET)
 
 		# didn't find |# at the end of a multiline comment
 		if not end:
@@ -124,7 +126,7 @@ class Scanner(object):
 				else:
 					self.tokens.append(Token('COLON', ':', self.lineNum))
 					# 'unget' the last character
-					self.file.seek(-1,1)
+					self.file.seek(self.file.tell() - 1, os.SEEK_SET)
 			elif self.c == '*':
 				self.tokens.append(Token('MULTIPLY', '*', self.lineNum))
 			elif self.c == '+':
