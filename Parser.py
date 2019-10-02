@@ -77,7 +77,7 @@ class Parser(object):
 		preds.append(self.predicate({'ID', 'STRING'}))
 		self.predicateList({'ID', 'STRING'}, preds)
 		self.match({'PERIOD'})
-		self.program.rules.append(Rule(headPredicate, preds))
+		self.program.rules.append(Rule(headPredicate, preds, len(self.program.rules)))
 
 	def ruleList(self):
 		if self.tokens[self.marker].type == 'ID':

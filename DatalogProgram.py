@@ -1,7 +1,8 @@
 class Rule(object):
-	def __init__(self, head, predicates):
+	def __init__(self, head, predicates, n):
 		self.head = head
 		self.predicates = predicates
+		self.n = n
 
 	def __repr__(self):
 		sb = []

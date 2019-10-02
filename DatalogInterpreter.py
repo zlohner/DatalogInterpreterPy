@@ -12,15 +12,13 @@ def interpret(filename, project):
 	if project == 1:
 		print(s)
 		return
-	else:
-		s.removeComments()
+	s.removeComments()
 
 	p = Parser()
 	p.parse(s.tokens)
 	if project == 2:
 		if p.good:
-			print('Success!')
-			print(str(p.program))
+			print('Success!\n' + str(p.program))
 		return
 
 	i = Interpreter(p.program)
