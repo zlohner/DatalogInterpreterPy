@@ -117,7 +117,7 @@ class Relation(object):
 	def __len__(self):
 		return len(self.tuples)
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 
 		if len(self.schema) > 0:

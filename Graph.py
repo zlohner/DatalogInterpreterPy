@@ -32,7 +32,7 @@ class Graph(object):
 	def __len__(self):
 		return len(self.nodes)
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 		for node in self.nodes:
 			sb.append('R')

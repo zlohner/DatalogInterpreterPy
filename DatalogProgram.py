@@ -4,7 +4,7 @@ class Rule(object):
 		self.predicates = predicates
 		self.n = n
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 		sb.append(str(self.head))
 		sb.append(' :- ')
@@ -23,7 +23,7 @@ class Predicate(object):
 		self.name = name
 		self.params = params
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 		sb.append(self.name)
 		sb.append('(')
@@ -46,7 +46,7 @@ class DatalogProgram(object):
 		self.queries = []
 		self.domain = set([])
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 
 		sb.append('Schemes(')

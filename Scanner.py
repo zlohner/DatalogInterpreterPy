@@ -13,7 +13,7 @@ class Scanner(object):
 		self.tokens = []
 		self.lineNum = 1
 
-	def __repr__(self):
+	def __str__(self):
 		sb = []
 		for token in self.tokens:
 			sb.append(str(token))
