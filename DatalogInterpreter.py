@@ -25,7 +25,7 @@ def interpret(filename, project):
 	i.interpret(project)
 	print(i.output(project))
 
-project = 3
+project = 5
 if len(sys.argv) > 2:
 	project = int(sys.argv[2])
 interpret(sys.argv[1], project)
