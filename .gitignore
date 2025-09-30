@@ -3,3 +3,8 @@ test.sh
 test/
 .specstory/
 .cursorindexingignore
+codebase_switcher.py
+
+# Ignore .cursorignore files
+
+.cursorignore
