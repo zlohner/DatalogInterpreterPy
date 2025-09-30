@@ -2,7 +2,7 @@
 
 author: Zachary Lohner
 
-USAGE: ./DatalogInterpreter.py inputFile projectNumber
+USAGE: python DatalogInterpreter.py inputFile projectNumber
 
 an interpreter for the Datalog relational database language,
 for the CS236 course at Brigham Young University (python version)

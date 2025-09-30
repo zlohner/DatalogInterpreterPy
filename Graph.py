@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 class Graph(object):
 	def __init__(self, n):
 		self.nodes = [i for i in range(n)]
@@ -9,7 +7,7 @@ class Graph(object):
 		self.visited = [False for i in range(n)]
 
 	def clearVisited(self):
-		self.visited = [False for i in range(len(visited))]
+		self.visited = [False for i in range(len(self.visited))]
 
 	def action(self, node):
 		pass

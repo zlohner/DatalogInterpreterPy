@@ -8,7 +8,8 @@ keywords = { 'Schemes' : 'SCHEMES', 'Facts' : 'FACTS', 'Rules' : 'RULES', 'Queri
 
 class Scanner(object):
 	def __init__(self):
-		self.file = None
+		self.content = None
+		self.index = -1
 		self.c = None
 		self.tokens = []
 		self.lineNum = 1
@@ -21,43 +22,52 @@ class Scanner(object):
 		sb.append('Total Tokens = ')
 		sb.append(str(len(self.tokens)))
 		return ''.join(sb)
+	
+	def open(self, filename):
+		self.index = -1
+		with open(filename, 'r', encoding='utf8') as file:
+			self.content = file.read()
+		self.get()
 
-	# scan the input file for an ID token
+	def get(self):
+		self.index += 1
+		if self.index < len(self.content):
+			self.c = self.content[self.index]
+		else:
+			self.c = ''
+		return self.c
+
+	def unget(self):
+		self.index -= 1
+		self.c = self.content[self.index]
+
 	def scanID(self):
 		type = 'ID'
 		value = ''
-		# is it a letter/number?
 		while self.c.isalnum():
-			# add to value and read next char
 			value += self.c
-			self.c = self.file.read(1)
-		# 'unget' the last character
-		self.file.seek(self.file.tell() - 1, os.SEEK_SET)
+			self.get()
+		self.unget()
 
-		# if it's a keyword, create that keyword token
 		if value in keywords:
 			type = keywords[value]
 
 		return Token(type, value, self.lineNum)
 
-	# scan the input file for a string token
 	def scanString(self):
 		type = 'STRING'
 		value = '\''
 		startLine = self.lineNum
 
-		# looking for ' not followed by another '
 		end = False
 		while not end and self.c:
-			self.c = self.file.read(1)
-			value += self.c
+			value += self.get()
 			if self.c == '\'':
-				self.c = self.file.read(1)
+				self.get()
 				if self.c == '\'':
 					value += self.c
 				else:
-					# 'unget' the last character
-					self.file.seek(self.file.tell() - 1, os.SEEK_SET)
+					self.unget()
 					end = True
 			elif self.c == '\n':
 				self.lineNum += 1
@@ -67,39 +77,32 @@ class Scanner(object):
 
 		return Token(type, value, startLine)
 
-	# scan the input file for a comment token
 	def scanComment(self):
 		type = 'COMMENT'
 		value = '#'
 		startLine = self.lineNum
 		end = True
 
-		self.c = self.file.read(1)
+		self.get()
 
-		# multiline; looking for | followed by #
 		if self.c == '|':
 			value += self.c
 
 			end = False
 			while not end and self.c:
-				self.c = self.file.read(1)
-				value += self.c
+				value += self.get()
 				if self.c == '|':
-					self.c = self.file.read(1)
-					value += self.c
+					value += self.get()
 					if self.c == '#':
 						end = True
 				if self.c == '\n':
 					self.lineNum += 1
-		# single line
 		else:
 			while self.c != '\n':
 				value += self.c
-				self.c = self.file.read(1)
-			# 'unget' the last character
-			self.file.seek(self.file.tell() - 1, os.SEEK_SET)
+				self.get()
+			self.unget()
 
-		# didn't find |# at the end of a multiline comment
 		if not end:
 			type = 'UNDEFINED'
 
@@ -108,10 +111,8 @@ class Scanner(object):
 	def removeComments(self):
 		self.tokens = [token for token in self.tokens if token.type != 'COMMENT']
 
-	# scans the file and splits into tokens, stored in tokens
 	def scan(self, filename):
-		self.file = open(filename, 'r')
-		self.c = self.file.read(1)
+		self.open(filename)
 		self.tokens = []
 		self.lineNum = 1
 		while self.c:
@@ -126,13 +127,12 @@ class Scanner(object):
 			elif self.c == ')':
 				self.tokens.append(Token('RIGHT_PAREN', ')', self.lineNum))
 			elif self.c == ':':
-				self.c = self.file.read(1)
+				self.get()
 				if self.c == '-':
 					self.tokens.append(Token('COLON_DASH', ':-', self.lineNum))
 				else:
 					self.tokens.append(Token('COLON', ':', self.lineNum))
-					# 'unget' the last character
-					self.file.seek(self.file.tell() - 1, os.SEEK_SET)
+					self.unget()
 			elif self.c == '*':
 				self.tokens.append(Token('MULTIPLY', '*', self.lineNum))
 			elif self.c == '+':
@@ -147,9 +147,7 @@ class Scanner(object):
 				elif (self.c.isspace()):
 					if (self.c == '\n'):
 						self.lineNum += 1
-					# skip whitespace
 				else:
 					self.tokens.append(Token('UNDEFINED', self.c, self.lineNum))
-			self.c = self.file.read(1)
-		# manually add EOF token
+			self.get()
 		self.tokens.append(Token('EOF', '', self.lineNum))
